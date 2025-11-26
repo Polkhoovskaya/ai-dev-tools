@@ -1,0 +1,33 @@
+{% extends 'todos/base.html' %}
+
+{% block content %}
+<h1>TODO List</h1>
+<a href="{% url 'todo_create' %}" class="btn">+ New TODO</a>
+
+<div style="margin-top: 20px;">
+    {% for todo in todos %}
+    <div class="todo-item {% if todo.is_resolved %}resolved{% endif %} {% if todo.is_overdue %}overdue{% endif %}">
+        <h3>{{ todo.title }}</h3>
+        {% if todo.description %}
+        <p>{{ todo.description }}</p>
+        {% endif %}
+        {% if todo.due_date %}
+        <p><strong>Due:</strong> {{ todo.due_date|date:"Y-m-d" }}
+            {% if todo.is_overdue %}<span style="color: #000;">(OVERDUE)</span>{% endif %}
+        </p>
+        {% endif %}
+        <p><strong>Status:</strong> {% if todo.is_resolved %}✓ Resolved{% else %}○ Pending{% endif %}</p>
+        
+        <div class="todo-actions">
+            <a href="{% url 'todo_toggle' todo.pk %}" class="btn btn-secondary">
+                {% if todo.is_resolved %}Mark Pending{% else %}Mark Resolved{% endif %}
+            </a>
+            <a href="{% url 'todo_update' todo.pk %}" class="btn btn-secondary">Edit</a>
+            <a href="{% url 'todo_delete' todo.pk %}" class="btn btn-danger">Delete</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>No TODOs yet. Create one to get started!</p>
+    {% endfor %}
+</div>
+{% endblock %}
